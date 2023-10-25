@@ -36,10 +36,16 @@ pub async fn parse_request(mut stream: impl AsyncBufRead + Unpin) -> anyhow::Res
         .ok_or(anyhow::anyhow!("missing method"))
         .and_then(TryInto::try_into)?;
 
-    let path: String = parts
+    let mut path: String = parts
         .next()
         .ok_or(anyhow::anyhow!("missing path"))
-        .map(Into::into)?;
+        .map(Into::<String>::into)?;
+
+    path = path.splitn(2,'?')
+        .take(1)
+        .collect();
+
+    println!("{}", &path);    
 
     let mut headers = HashMap::new();
 
